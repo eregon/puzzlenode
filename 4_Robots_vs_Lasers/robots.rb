@@ -1,6 +1,6 @@
 # Robots vs Lasers
 
-# This is mainly a tight embrace of curly and square braces
+# This is mainly a tight embrace of square brackets and curly braces
 
 Input = 'input.txt'
 Input.prepend('sample-') if ARGV.delete('-s')
