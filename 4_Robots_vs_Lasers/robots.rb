@@ -1,17 +1,15 @@
 # Robots vs Lasers
 
-# This is mainly a tight embrace of square brackets and curly braces
+# This is a tight embrace of square brackets and curly braces
 
 Input = 'input.txt'
-Input.prepend('sample-') if ARGV.delete('-s')
+Input.prepend 'sample-' if ARGV.delete '-s'
 
 Directions = [:west, :east]
 
 def destiny(lasers, start)
-  positions = Hash.new(start)
-  damages = Hash.new(0)
+  positions, damages = Hash.new(start), Hash.new(0)
   exits = { west: 0, east: lasers.first.size-1 }
-
   other = -> d { Directions.find { |dir| dir != d } }
   go = -> d { "GO #{d.upcase}" }
 
