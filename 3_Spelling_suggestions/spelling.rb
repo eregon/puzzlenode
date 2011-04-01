@@ -15,7 +15,7 @@ class String
   		].min
   	end
   end
-  
+
   def levenshtein(a, b)
   	1.upto(b.length) do |y|
   		prow = row
@@ -32,7 +32,7 @@ class String
 
   	row[-1]
   end
-  
+
   # inspired from levenshtein distance
   # sort of inverted algorithm
   def self.invert_levenshtein1(a, b)
@@ -52,7 +52,7 @@ class String
 
   	row[-1]
   end
-  
+
   def self.invert_levenshtein(a, b)
     row	= (0..a.length).to_a
   	b.length.times do |y|
