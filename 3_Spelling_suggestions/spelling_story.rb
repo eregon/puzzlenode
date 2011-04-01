@@ -126,7 +126,6 @@ class String
     seq.inject(-1) { |i, char|
       index(char, i+1) or return false
     }
-    true
   end
 
   def choose(a, b)
