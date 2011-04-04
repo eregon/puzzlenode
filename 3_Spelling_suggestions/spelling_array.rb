@@ -1,0 +1,45 @@
+Input = 'INPUT.txt'
+Input.prepend 'SAMPLE_' if ARGV.delete '-s'
+
+[true, false].each { |bool|
+class << bool
+  def coerce(other)
+    [other, self ? 1 : 0]
+  end
+end
+}
+
+def String.common_subsequence(a, b)
+  row	= [0]*(a.size+1)
+  b.size.times do |y|
+    prow = row
+    row = [0]
+
+    a.size.times do |x|
+      row[x+1] = [
+        prow[x+1],
+        row[x],
+        prow[x] + (a[x] == b[y] ? 1 : 0)
+      ].max
+    end
+  end
+
+  row[-1]
+end
+
+def String.common_subsequence_array(a, b)
+  rows = Array.new(a.size+1) { [0]*(b.size+1) }
+
+  rows.each_with_index { |row, i|
+    row.each_with_index { |e, j|
+      next if i*j == 0
+      rows[i][j] = [rows[i-1][j], rows[i][j-1], rows[i-1][j-1] + (a[i-1] == b[j-1])].max
+    }
+  }
+
+  rows.last.last
+end
+
+lines = File.read(Input).scan(/^(\w+)\n(\w+)\n(\w+)$/) { |misspelled, *words|
+  puts words.max_by { |word| String.common_subsequence_array(misspelled, word) }
+}
