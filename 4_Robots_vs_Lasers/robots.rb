@@ -24,7 +24,7 @@ def destiny(lasers, start)
       end
     }
   }
-  go.call Directions.min_by { |d| damages[d] }
+  go::(Directions.min_by { |d| damages[d] })
 end
 
 File.readlines(Input).map(&:chomp).reject(&:empty?).each_slice(3) { |north, robot, south|
