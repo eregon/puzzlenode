@@ -13,16 +13,46 @@ p [2,-3].map(&P.abs)
 
 p [2,-3].map(&P.abs.succ)
 
-PM = lambda { |subject| subject }
-
 module Forward
   def method_missing(meth, *args, &blk)
     lambda { |recv| self.call(recv).send(meth, *args, &block) }.extend(Forward)
   end
+  
+  def self.extended(by)
+    class << by
+      undef_method :==
+      undef_method :!
+    end
+  end
 end
 
-PM.extend Forward
+PM = lambda { |subject| subject }.extend Forward
 
 p [2,-3].map(&PM.abs)
 p [2,-3].map(&PM.abs.succ)
 p [2,-3].map(&PM.abs.succ * 2)
+
+p [1,2].map(&PM == 2)
+p [1,2].map(&PM == 2).map(&!PM)
+p [1,2].map(&!(PM == 2))
+p [1,2].map(&PM * 2 - 1 + 5)
+
+exit
+
+class Blank < BasicObject
+  undef_method :==
+  def method_missing(meth, *args, &block)
+    @meth, @args, @block = meth, args, block
+    self
+  end
+  def call(*args)
+    send(@meth, *@args, &@block)
+  end
+  def to_proc
+    self
+  end
+end
+
+B = Blank.new
+p [2,-3].map(&B.abs)
+#p [1,2].map(&B == 2)
