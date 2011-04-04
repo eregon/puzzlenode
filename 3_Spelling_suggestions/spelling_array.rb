@@ -1,7 +1,7 @@
 Input = 'INPUT.txt'
 Input.prepend 'SAMPLE_' if ARGV.delete '-s'
 
-[true, false].each { |bool|
+[true,false].each { |bool|
   bool.define_singleton_method(:coerce) { |other|
     [other, self ? 1 : 0]
   }
@@ -39,9 +39,9 @@ def String.common_subsequence_array(a, b)
 end
 
 def String.common_subsequence_hash(a, b)
-  Hash.new { |h, (i, j)|
+  Hash.new { |h, (i,j)|
     i*j == 0 ? 0 : h[[i,j]] = [h[[i-1,j]], h[[i,j-1]], h[[i-1,j-1]] + (a[i-1] == b[j-1])].max
-  }[[a.size, b.size]]
+  }[[a.size,b.size]]
 end
 
 def String.common_subsequence_hash2(a, b)
