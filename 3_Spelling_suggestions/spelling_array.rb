@@ -2,11 +2,9 @@ Input = 'INPUT.txt'
 Input.prepend 'SAMPLE_' if ARGV.delete '-s'
 
 [true, false].each { |bool|
-class << bool
-  def coerce(other)
+  bool.define_singleton_method(:coerce) { |other|
     [other, self ? 1 : 0]
-  end
-end
+  }
 }
 
 def String.common_subsequence(a, b)
