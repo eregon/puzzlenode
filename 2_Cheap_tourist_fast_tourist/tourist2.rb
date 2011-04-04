@@ -16,14 +16,14 @@ class Path
   def initialize(path)
     @ary = path
   end
-  
+
   #def_delegators :@ary, :join, :map, :last, :first
-  delegate [:join, :map, :last, :first] => :@ary
-  
+  delegate [:join, :each, :map, :last, :first] => :@ary
+
   def cost
     map(&:price).reduce(:+)
   end
-  
+
   def duration
     @duration ||= last.arrival - first.departure
   end
@@ -47,7 +47,7 @@ class Hour
       hour.divmod(60)
     end
   end
-  
+
   def to_i
     @h * 60 + @m
   end
@@ -55,11 +55,11 @@ class Hour
   def to_s
     [@h, @m].map { |e| '%02d' % e }.join(':')
   end
-  
+
   def - hour
     to_i - hour.to_i
   end
-  
+
   def <=>(hour)
     to_i <=> hour.to_i
   end
@@ -72,11 +72,11 @@ class Flight
     @departure, @arrival = [departure, arrival].map { |hour| Hour.new(hour) }
     @price = price.to_i
   end
-  
+
   def to_s
     "#{from}(#{departure}) -> #{to}(#{arrival}) #{price}$"
   end
-  
+
   def > flight
     departure >= flight.arrival
   end
@@ -101,7 +101,7 @@ def sub(paths, flight, flights, visited = [flight.from, flight.to], path = [flig
 end
 
 lines = File.read(Input).lines
-flight_groups = lines.next.to_i.times.map { 
+flight_groups = lines.next.to_i.times.map {
   lines.next
   lines.next.to_i.times.map {
     Flight.new(*lines.next.split)
@@ -126,23 +126,36 @@ flight_groups.each_with_index { |flights, i|
       }
     }.output(svg: "graph/graph-#{Input}-#{i+1}-simplified.svg")
   end
-  
+
   all_paths = all_paths(flights)
   all_paths.each { |path| p path } && puts if $DEBUG
-  
+
   all_paths.all_min_by(&:cost).each { |path| p path } if $VERBOSE
-  path = all_paths.min_by(&:cost) # need a criteria to find shortest flights
-  p path if $DEBUG
-  puts path
-  
+  cheapest_path = all_paths.min_by(&:cost) # need a criteria to find shortest flights
+  p cheapest_path if $DEBUG
+  puts cheapest_path
+
   all_paths.all_min_by(&:duration).each { |path| p path } if $VERBOSE
-  path = all_paths.all_min_by(&:duration).min_by(&:cost)
-  p path if $DEBUG
-  puts path
-  
+  fast_path = all_paths.all_min_by(&:duration).min_by(&:cost)
+  p fast_path if $DEBUG
+  puts fast_path
+
   puts
-  
-  #exit
+
+  if ARGV.include? '-p' # draw paths
+    require 'graphviz'
+    GraphViz.digraph(:G) { |g|
+      nodes = Hash.new { |h, airport| h[airport] = g.add_node(airport) }
+      n = all_paths.size
+      all_paths.each_with_index { |path, i|
+        color = "##{(i * 256**3 / n).to_s(16)}"
+        width = (path == cheapest_path or path == fast_path) ? 4 : 1
+        path.each { |flight|
+          g.add_edge( nodes[flight.from], nodes[flight.to], color: color, penwidth: width )
+        }
+      }
+    }.output(svg: "graph/graph-#{Input}-#{i+1}-paths.svg")
+  end
 }
 
 
