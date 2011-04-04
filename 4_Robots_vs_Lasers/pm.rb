@@ -15,9 +15,9 @@ p [2,-3].map(&P.abs.succ)
 
 module Forward
   def method_missing(meth, *args, &blk)
-    lambda { |recv| self.call(recv).send(meth, *args, &block) }.extend(Forward)
+    lambda { |recv| self.call(recv).send(meth, *args, &block) }.extend Forward
   end
-  
+
   def self.extended(by)
     class << by
       undef_method :==

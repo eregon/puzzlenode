@@ -8,11 +8,17 @@ Input.prepend 'sample-' if ARGV.delete '-s'
 Directions = [:west, :east]
 
 module Forward
-  def method_missing(meth, *args, &blk)
+  def method_missing(meth, *args, &block)
     lambda { |recv| self.call(recv).send(meth, *args, &block) }.extend Forward
   end
+
+  def self.extended(by)
+    class << by
+      undef_method :==
+    end
+  end
 end
-P = lambda { |subject| subject }.extend Forward
+P = lambda { |s| s }.extend Forward
 
 def destiny(lasers, start)
   positions, damages = Hash.new(start), Hash.new(0)
@@ -36,6 +42,6 @@ end
 
 File.readlines(Input).map(&:chomp).reject(&:empty?).each_slice(3) { |north, robot, south|
 # lasers = [north, south].map { |side| side.chars.map { |c| c == '|' } }
-  lasers = [north, south].map { |side| side.chars.map(&P == '|') }
+  lasers = [north, south].map(&P.chars.map(&P == '|'))
   puts destiny(lasers, robot.index('X'))
 }
