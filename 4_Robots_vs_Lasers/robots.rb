@@ -7,6 +7,12 @@ Input.prepend 'sample-' if ARGV.delete '-s'
 
 Directions = [:west, :east]
 
+class Hash
+  def to_proc
+    lambda { |key| self[key] }
+  end
+end
+
 def destiny(lasers, start)
   positions, damages = Hash.new(start), Hash.new(0)
   exits = { west: 0, east: lasers.first.size-1 }
@@ -24,7 +30,7 @@ def destiny(lasers, start)
       end
     }
   }
-  go::(Directions.min_by { |d| damages[d] })
+  go::(Directions.min_by(&damages))
 end
 
 File.readlines(Input).map(&:chomp).reject(&:empty?).each_slice(3) { |north, robot, south|
