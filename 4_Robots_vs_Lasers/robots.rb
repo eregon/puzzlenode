@@ -5,12 +5,10 @@
 Input = 'input.txt'
 Input.prepend 'sample-' if ARGV.delete '-s'
 
-Directions = [:west, :east]
-
 def destiny(lasers, start)
   positions, damages = Hash.new(start), Hash.new(0)
   exits = { west: 0, east: lasers.first.size-1 }
-  other = -> d { Directions.find { |dir| dir != d } }
+  other = -> d { exits.keys.find { |dir| dir != d } }
   go = -> d { "GO #{d.upcase}" }
 
   [exits[:west]+start, exits[:east]-start].max.times { |click|
@@ -24,7 +22,7 @@ def destiny(lasers, start)
       end
     }
   }
-  go::(Directions.min_by { |d| damages[d] })
+  go::(exits.keys.min_by { |d| damages[d] })
 end
 
 File.readlines(Input).map(&:chomp).reject(&:empty?).each_slice(3) { |north, robot, south|
