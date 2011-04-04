@@ -94,7 +94,7 @@ def sub(paths, flight, flights, visited = [flight.from, flight.to], path = [flig
   if flight.to == Arrival
     paths << Path.new(path)
   else
-    flights.select { |f| f > flight and !visited.include? f.to }.each { |f|
+    flights.select { |f| f > flight }.each { |f|
       sub(paths, f, flights, visited + [f.to], path + [f])
     }
   end
