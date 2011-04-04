@@ -44,6 +44,12 @@ def String.common_subsequence_hash(a, b)
   }[[a.size, b.size]]
 end
 
+def String.common_subsequence_hash2(a, b)
+  Hash.new { |h, r| i, j = r.begin, r.end
+    i*j == 0 ? 0 : h[i..j] = [h[i-1..j], h[i..j-1], h[i-1..j-1] + (a[i-1] == b[j-1])].max
+  }[a.size..b.size]
+end
+
 lines = File.read(Input).scan(/^(\w+)\n(\w+)\n(\w+)$/) { |misspelled, *words|
-  puts words.max_by { |word| String.common_subsequence_hash(misspelled, word) }
+  puts words.max_by { |word| String.common_subsequence_hash2(misspelled, word) }
 }
