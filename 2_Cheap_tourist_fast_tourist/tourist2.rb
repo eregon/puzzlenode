@@ -122,7 +122,7 @@ flight_groups.each_with_index { |flights, i|
     GraphViz.digraph(:G) { |g|
       nodes = Hash.new { |h, airport| h[airport] = g.add_node(airport) }
       flights.each { |flight|
-        nodes[flight.from] << nodes[flight.to]
+        g.add_edge( nodes[flight.from], nodes[flight.to] )
       }
     }.output(svg: "graph/graph-#{Input}-#{i+1}-simplified.svg")
   end
