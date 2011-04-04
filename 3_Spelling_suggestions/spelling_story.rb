@@ -146,12 +146,6 @@ class String
   end
 end
 
-lines = File.read(Input).lines
-lines.next.to_i.times.map {
-  lines.next
-  3.times.map { lines.next.chomp }
-}.each { |group|
-  misspelled, *words = group
-  #puts misspelled.choose(*words)
+lines = File.read(Input).scan(/^(\w+)\n(\w+)\n(\w+)$/) { |misspelled, *words|
   puts words.max_by { |word| String.common_subsequence(misspelled, word) }
 }
