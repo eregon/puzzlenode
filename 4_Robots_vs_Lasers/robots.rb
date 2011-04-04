@@ -13,8 +13,7 @@ def destiny(lasers, start)
 
   [exits[:west]+start, exits[:east]-start].max.times { |click|
     { west: -1, east: 1 }.each_pair { |direction, step|
-      position = positions[direction]
-      if position == exits[direction]
+      if (position = positions[direction]) == exits[direction]
         return go[direction] if damages[other[direction]] > damages[direction]
       else
         damages[direction] += 1 if lasers[click % 2][position]
