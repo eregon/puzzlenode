@@ -77,8 +77,8 @@ class Flight
     "#{from}(#{departure}) -> #{to}(#{arrival}) #{price}$"
   end
 
-  def > flight
-    departure >= flight.arrival
+  def > flight # self can be taken after flight
+    flight.to == from and departure >= flight.arrival
   end
 end
 
@@ -94,7 +94,7 @@ def sub(paths, flight, flights, visited = [flight.from, flight.to], path = [flig
   if flight.to == Arrival
     paths << Path.new(path)
   else
-    flights.select { |f| f.from == flight.to and f > flight and !visited.include? f.to }.each { |f|
+    flights.select { |f| f > flight and !visited.include? f.to }.each { |f|
       sub(paths, f, flights, visited + [f.to], path + [f])
     }
   end
@@ -109,10 +109,21 @@ flight_groups = lines.next.to_i.times.map {
 }
 
 flight_groups.each_with_index { |flights, i|
+  # remove flights going to Start or going from Arrival
   flights.reject! { |flight| flight.to == Start or flight.from == Arrival }
 
+  # remove impossible flights
   flights.select! { |flight|
-    flight.from == Start or flight.to == Arrival or flights.any? { |f| f.to == flight.from and flight > f }
+    flight.from == Start or flight.to == Arrival or flights.any? { |f| flight > f }
+  }
+
+  # remove bad flights
+  flights.reject! { |flight|
+    flights.any? { |better|
+      better.from == flight.from and better.to == flight.to and
+      better.price <= flight.price and better.departure >= flight.departure and better.arrival <= flight.arrival and
+      (better.price < flight.price or better.departure > flight.departure or better.arrival < flight.arrival)
+    }
   }
 
   flights.sort_by! { |flight| [flight.from, flight.to, flight.departure, flight.arrival] }
@@ -124,11 +135,11 @@ flight_groups.each_with_index { |flights, i|
       flights.each { |flight|
         g.add_edge( nodes[flight.from], nodes[flight.to] )
       }
-    }.output(svg: "graph/graph-#{Input}-#{i+1}-simplified.svg")
+    }.output(svg: "graph/graph-#{Input}-#{i+1}-simplified2.svg")
   end
 
   all_paths = all_paths(flights)
-  all_paths.each { |path| p path } && puts if $DEBUG
+#  all_paths.each { |path| p path } && puts if $DEBUG
 
   all_paths.all_min_by(&:cost).each { |path| p path } if $VERBOSE
   cheapest_path = all_paths.min_by(&:cost) # need a criteria to find shortest flights
