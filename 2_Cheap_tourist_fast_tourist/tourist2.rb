@@ -110,6 +110,11 @@ flight_groups = lines.next.to_i.times.map {
 
 flight_groups.each_with_index { |flights, i|
   flights.reject! { |flight| flight.to == Start or flight.from == Arrival }
+
+  flights.select! { |flight|
+    flight.from == Start or flight.to == Arrival or flights.any? { |f| f.to == flight.from and flight > f }
+  }
+
   flights.sort_by! { |flight| [flight.from, flight.to, flight.departure, flight.arrival] }
 
   if ARGV.include? '-g' # graph
@@ -119,7 +124,7 @@ flight_groups.each_with_index { |flights, i|
       flights.each { |flight|
         nodes[flight.from] << nodes[flight.to]
       }
-    }.output(eps: "graph-#{Input}-#{i+1}.eps")
+    }.output(svg: "graph/graph-#{Input}-#{i+1}-simplified.svg")
   end
   
   all_paths = all_paths(flights)
@@ -135,7 +140,7 @@ flight_groups.each_with_index { |flights, i|
   p path if $DEBUG
   puts path
   
-  puts unless flights.equal? flight_groups.last
+  puts
   
   #exit
 }
