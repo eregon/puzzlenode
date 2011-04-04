@@ -20,6 +20,7 @@ module Forward
 
   def self.extended(by)
     class << by
+      undef_method :to_s
       undef_method :==
       undef_method :!
     end
@@ -36,6 +37,8 @@ p [1,2].map(&PM == 2)
 p [1,2].map(&PM == 2).map(&!PM)
 p [1,2].map(&!(PM == 2))
 p [1,2].map(&PM * 2 - 1 + 5)
+
+p [2,-3].map(&PM.abs.succ.to_s(3))
 
 exit
 

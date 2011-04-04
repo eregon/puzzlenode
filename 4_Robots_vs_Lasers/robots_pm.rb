@@ -15,6 +15,7 @@ module Forward
   def self.extended(by)
     class << by
       undef_method :==
+      undef_method :!=
     end
   end
 end
@@ -23,7 +24,7 @@ P = lambda { |s| s }.extend Forward
 def destiny(lasers, start)
   positions, damages = Hash.new(start), Hash.new(0)
   exits = { west: 0, east: lasers.first.size-1 }
-  other = -> d { Directions.find { |dir| dir != d } }
+  other = -> d { Directions.find(&P != d) }
   go = -> d { "GO #{d.upcase}" }
 
   [exits[:west]+start, exits[:east]-start].max.times { |click|
