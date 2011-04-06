@@ -1,4 +1,4 @@
-This is the submission of Benoit Daloze for the Ruby Mendicant University (April 6, 2011)
+This is my submission for the Ruby Mendicant University (April 6, 2011)
 
 Hello !
 
@@ -17,4 +17,14 @@ The solution is written on the standard output stream.
 Each problem has a out.txt file containing this result.
 You can then compare using `ruby <script.rb> | diff - out.txt`
 
-Each folder has its own README, explaining which 
+Each folder has its own README, explaining theirs contents.
+
+I hope you will enjoy them,
+Have a great read,
+And may Ruby be with you !
+
+
+Benoit Daloze
+@eregontp
+eregontp@gmail.com
+https://github.com/eregon

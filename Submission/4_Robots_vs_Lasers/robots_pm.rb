@@ -1,6 +1,6 @@
 # Robots vs Lasers
 
-# This is a tight embrace of square brackets and curly braces
+# Inspired from http://redmine.ruby-lang.org/issues/show/4146
 
 Input = 'input.txt'
 Input.prepend 'sample-' if ARGV.delete '-s'

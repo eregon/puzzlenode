@@ -1,0 +1,17 @@
+4 - Robots vs Lasers
+
+This problem was pretty simple, but *very* enjoyable.
+
+robots.rb is the solution.
+It focuses on nice tricks to have some unusual looking solution, while the logic behind should be easy to read.
+One of the highlight could be:
+  go[direction] if damages[other[direction]] > damages[direction]
+
+
+robots_pm.rb is the same solution, but use some 'Proc Maker' goodness.
+This allows to create blocks "a la" Symbol#to_proc, but in a more flexible way.
+
+Compare
+  lasers = [north, south].map { |side| side.chars.map { |c| c == '|' } }
+and
+  lasers = [north, south].map(&P.chars.map(&P == '|'))
