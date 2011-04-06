@@ -1,0 +1,10 @@
+3 - Spelling suggestions
+
+spelling.rb: This is a very short solution which perform well enough.
+             It's wrapped in 7 lines of maximum 100 characters width.
+             The algorithm used is explained on spelling_story.rb
+             It's also the main solution if there is only one to consider.
+             It can be run by any Ruby >= 1.8.7.
+
+spelling_story.rb: 
+
