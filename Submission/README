@@ -1,0 +1,18 @@
+This is the submission of Benoit Daloze for the Ruby Mendicant University (April 6, 2011)
+
+Hello !
+
+Here are my solutions.
+I chose these problems:
+  3 - Spelling suggestions
+  4 - Robots vs Lasers
+
+Their solutions are in their own folders as asked.
+
+They can be run by any Ruby >= 1.9.2, by `jruby --1.9` or even MacRuby.
+They need to be run from their own folders, as the input files paths are relatives.
+You can give a '-s' option to run the script against the sample input, else it will use the normal input.
+
+The solution is written on the standard output stream.
+Each problem has a out.txt file containing this result.
+You can then compare using `ruby <script.rb> | diff - out.txt`
