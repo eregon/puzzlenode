@@ -6,5 +6,15 @@ spelling.rb: This is a very short solution which perform well enough.
              It's also the main solution if there is only one to consider.
              It can be run by any Ruby >= 1.8.7.
 
-spelling_story.rb: 
+spelling_story.rb: This shows a part of the story path I took to come to my final solution.
+                   I first began to write the method String.choose but that performs too poorly for the real input.
+                   Then I remembered something about the levenshtein distance.
+                   And transformed it for this particular problem.
+                   The levenshtein method is an optimization of levenshtein_recur,
+                   which only keep the last and current row, because we only need those.
 
+spelling_array.rb: This script shows a different way to build the matrix in the comments of spelling_story.rb.
+                   Then, how that can easily be turned into a Hash, with its default caching behavior
+                   by using Hash.new block form.
+
+spelling_solution.rb: It is the "fast" solution, which used the dirived optimized levenshtein algorithm.
