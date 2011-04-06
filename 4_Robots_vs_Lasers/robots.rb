@@ -21,7 +21,7 @@ def destiny(lasers, start)
       end
     }
   }
-  go::(exits.keys.min_by { |d| damages[d] })
+  go::(exits.keys.min_by { |d| damages[d] }) # laser operator
 end
 
 File.readlines(Input).map(&:chomp).reject(&:empty?).each_slice(3) { |north, robot, south|
