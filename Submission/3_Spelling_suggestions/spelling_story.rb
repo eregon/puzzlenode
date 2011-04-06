@@ -1,4 +1,4 @@
-Input = ARGV.delete('-s') ? 'SAMPLE_INPUT.txt' : 'INPUT.txt'
+Input = ARGV.delete('-s') ? 'sample-input.txt' : 'input.txt'
 
 =begin
 problem's example:

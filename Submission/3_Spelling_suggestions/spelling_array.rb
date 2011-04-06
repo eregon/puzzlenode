@@ -1,5 +1,5 @@
-Input = 'INPUT.txt'
-Input.prepend 'SAMPLE_' if ARGV.delete '-s'
+Input = 'input.txt'
+Input.prepend 'sample-' if ARGV.delete '-s'
 
 [true,false].each { |bool|
   bool.define_singleton_method(:coerce) { |other|

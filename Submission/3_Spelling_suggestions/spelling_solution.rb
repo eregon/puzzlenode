@@ -1,5 +1,5 @@
-Input = 'INPUT.txt'
-Input.prepend 'SAMPLE_' if ARGV.delete '-s'
+Input = 'input.txt'
+Input.prepend 'sample-' if ARGV.delete '-s'
 
 def String.common_subsequence(a, b)
   row	= [0]*(a.size+1)
