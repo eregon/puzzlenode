@@ -17,4 +17,4 @@ spelling_array.rb: This script shows a different way to build the matrix in the 
                    Then, how that can easily be turned into a Hash, with its default caching behavior
                    by using Hash.new block form.
 
-spelling_solution.rb: It is the "fast" solution, which used the dirived optimized levenshtein algorithm.
+spelling_solution.rb: It is the "fast" solution, which used the derived optimized levenshtein algorithm.
