@@ -23,11 +23,7 @@ CURRENCIES.each { |currency|
   }
 }
 
-def find_conversion(from, to)
-  RATES[from][to] or find_it!(from, to)
-end
-
-def find_it! from, to
+def find_conversion from, to
   until RATES[from][to]
     cur = RATES[from].keys.find(lambda {
       raise "Couldnt find from #{from} to #{to} with #{values} and #{RATES}"
