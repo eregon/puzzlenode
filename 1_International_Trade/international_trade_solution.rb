@@ -10,6 +10,8 @@ module InternationTrade
     currencies = rates.inject([]) { |currencies, (from, to_conversion)|
       currencies | [from, *to_conversion.keys]
     }
+    
+    find_rates_from_reverse(rates, currencies)
 
     transactions = parse_transactions(transactions_csv, item)
 
