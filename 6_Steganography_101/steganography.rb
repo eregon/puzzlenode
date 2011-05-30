@@ -38,13 +38,11 @@ class Bitmap
 
     @height.times { |y|
       @width.times { |x|
-        bit = hidden_binary_message[y*@width+x] || 0 # fill with zeros the rest
-        # if bit == 1
-        #   @pixels[y][x] += 1 if @pixels[y][x].even?
-        # else
-        #   @pixels[y][x] -= 1 if @pixels[y][x].odd?
-        # end
-        @pixels[y][x] -= 1*(-1)**bit unless @pixels[y][x] % 2 == bit
+        if hidden_binary_message[y*@width+x] == 1
+          @pixels[y][x] += 1 if @pixels[y][x].even?
+        else # fill with zeros the rest
+          @pixels[y][x] -= 1 if @pixels[y][x].odd?
+        end
       }
     }
   end
