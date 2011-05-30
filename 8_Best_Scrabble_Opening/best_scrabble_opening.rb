@@ -49,54 +49,64 @@ module Scrabble
       end
     end
   end
-  Tile = Struct.new(:letter, :value)
 
   def best_opening(input)
-    data = JSON.parse(File.read(input))
+    data = JSON.parse File.read input
 
     board = Board.new data['board'].map { |line| line.split.map(&:to_i) }
 
     dictionary = data['dictionary']
 
-    tiles = data['tiles'].map { |tile| Tile.new tile[0], tile[1..-1].to_i }
-    letters = tiles.map(&:letter).each_with_object(Hash.new(0)) { |c, h| h[c] += 1 }
-    letter_values = tiles.each_with_object({}) { |t, h| h[t.letter] = t.value }
+    letters, letter_values = Hash.new(0), {}
+    data['tiles'].each { |tile|
+      letter, value = tile[0], tile[1..-1].to_i
+      letters[letter] += 1
+      letter_values[letter] = value
+    }
 
     # select doable
     words = dictionary.select { |word|
-      word.chars.each_with_object(Hash.new(0)) { |c, h| h[c] += 1 }.all? { |letter, count|
+      count_letters(word).all? { |letter, count|
         letters[letter] and letters[letter] >= count
       }
     }
 
     # find best place
-    score, word, place = words.max_by_keys { |word|
-      score, best_place = places_for(word, board).max_by_keys { |starting_position|
+    _, best_word, best_place = words.max_by_keys { |word|
+      score, place = places_for(word, board).max_by_keys { |starting_position|
         place = starting_position.dup
-        score = word.chars.inject(0) { |score, letter|
+        score = word.chars.inject(0) { |s, letter|
           value = board.values[place.y][place.x] * letter_values[letter]
           place.next!
-          score + value
+          s + value
         }
         [score, starting_position]
       }
-      [score, word, best_place]
+      [score, word, place]
     }
-#p [word, place]
 
-    board.play(word, place)
+    board.play(best_word, best_place)
     print board
   end
 
   def places_for(word, board)
-    [].tap { |places|
-      (0...board.height).each { |y|
-        (0...board.width-word.size).each { |x| places << StartPosition.new(x, y, :horizontal) }
-      }
-      (0...board.height-word.size).each { |y|
-        (0...board.width).each { |x| places << StartPosition.new(x, y, :vertical) }
+    places = []
+    (0...board.height).each { |y|
+      (0...board.width-word.size).each { |x|
+        places << StartPosition.new(x, y, :horizontal)
       }
     }
+    (0...board.height-word.size).each { |y|
+      (0...board.width).each { |x|
+        places << StartPosition.new(x, y, :vertical)
+      }
+    }
+    places
+  end
+
+  private
+  def count_letters(word)
+    word.chars.each_with_object(Hash.new(0)) { |c, h| h[c] += 1 }
   end
 end
 
