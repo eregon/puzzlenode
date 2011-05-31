@@ -1,23 +1,5 @@
 require 'json'
 
-module Enumerable
-  # save all keys passed at the end of Array passed for max
-  # [value maximised, what_to_keep]
-  # => [max, what_to_keep from max]
-  def max_by_keys
-    best_value = nil
-    best_to_keep = nil
-    each { |e|
-      value, *to_keep = yield(e)
-      if best_value == nil or value > best_value
-        best_value = value
-        best_to_keep = to_keep
-      end
-    }
-    [best_value, *best_to_keep]
-  end
-end
-
 module Scrabble
   extend self
 
@@ -72,8 +54,8 @@ module Scrabble
     }
 
     # find best place
-    _, best_word, best_place = words.max_by_keys { |word|
-      score, place = places_for(word, board).max_by_keys { |starting_position|
+    _, best_word, best_place = max_by_keys(words) { |word|
+      score, place = max_by_keys(places_for(word, board)) { |starting_position|
         place = starting_position.dup
         score = word.chars.inject(0) { |s, letter|
           value = board.values[place.y][place.x] * letter_values[letter]
@@ -107,6 +89,22 @@ module Scrabble
   private
   def count_letters(word)
     word.chars.each_with_object(Hash.new(0)) { |c, h| h[c] += 1 }
+  end
+
+  # save all keys passed at the end of Array passed for max
+  # [value_maximised, what_to_keep]
+  # => [max, what_to_keep related to max]
+  def max_by_keys(enum)
+    best_value = nil
+    best_to_keep = nil
+    enum.each { |e|
+      value, *to_keep = yield(e)
+      if best_value == nil or value > best_value
+        best_value = value
+        best_to_keep = to_keep
+      end
+    }
+    [best_value, *best_to_keep]
   end
 end
 
