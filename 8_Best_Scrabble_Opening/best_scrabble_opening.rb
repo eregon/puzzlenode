@@ -54,7 +54,7 @@ module Scrabble
     }
 
     # find best place
-    _, best_word, best_place = max_by_keys(words) { |word|
+    best_word, best_place = max_by_keys(words) { |word|
       score, place = max_by_keys(places_for(word, board)) { |starting_position|
         place = starting_position.dup
         score = word.chars.inject(0) { |s, letter|
@@ -62,7 +62,7 @@ module Scrabble
           place.next!
           s + value
         }
-        [score, starting_position]
+        [score, score, starting_position]
       }
       [score, word, place]
     }
@@ -104,7 +104,7 @@ module Scrabble
         best_to_keep = to_keep
       end
     }
-    [best_value, *best_to_keep]
+    best_to_keep
   end
 end
 
