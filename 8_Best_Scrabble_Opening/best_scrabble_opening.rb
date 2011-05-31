@@ -100,7 +100,7 @@ module Scrabble
 
   # save all keys passed at the end of Array passed for max
   # [value_maximised, what_to_keep]
-  # => [max, what_to_keep related to max]
+  # => [what_to_keep related to max]
   def max_by_keys(enum)
     best_value = nil
     best_to_keep = nil
