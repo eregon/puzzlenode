@@ -33,20 +33,9 @@ module Scrabble
   end
 
   def best_opening(input)
-    data = JSON.parse File.read input
+    board, dictionary, letters, letter_values = parse_input(input)
 
-    board = Board.new data['board'].map { |line| line.split.map(&:to_i) }
-
-    dictionary = data['dictionary']
-
-    letters, letter_values = Hash.new(0), {}
-    data['tiles'].each { |tile|
-      letter, value = tile[0], tile[1..-1].to_i
-      letters[letter] += 1
-      letter_values[letter] = value
-    }
-
-    # select doable
+    # select possible words
     words = dictionary.select { |word|
       count_letters(word).all? { |letter, count|
         letters[letter] and letters[letter] >= count
@@ -68,6 +57,7 @@ module Scrabble
     }
 
     board.play(best_word, best_place)
+
     print board
   end
 
@@ -87,6 +77,23 @@ module Scrabble
   end
 
   private
+  def parse_input(file)
+    data = JSON.parse File.read input
+
+    board = Board.new data['board'].map { |line| line.split.map(&:to_i) }
+
+    dictionary = data['dictionary']
+
+    letters, letter_values = Hash.new(0), {}
+    data['tiles'].each { |tile|
+      letter, value = tile[0], tile[1..-1].to_i
+      letters[letter] += 1
+      letter_values[letter] = value
+    }
+
+    [board, dictionary, letters, letter_values]
+  end
+
   def count_letters(word)
     word.chars.each_with_object(Hash.new(0)) { |c, h| h[c] += 1 }
   end
