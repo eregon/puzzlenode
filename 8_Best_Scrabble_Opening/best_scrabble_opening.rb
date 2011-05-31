@@ -110,5 +110,5 @@ module Scrabble
   end
 end
 
-Scrabble.best_opening('EXAMPLE_INPUT.json')
-#Scrabble.best_opening('INPUT.json')
+#Scrabble.best_opening('EXAMPLE_INPUT.json')
+Scrabble.best_opening('INPUT.json')
