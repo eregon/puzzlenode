@@ -58,7 +58,7 @@ module Scrabble
 
     board.play(best_word, best_place)
 
-    print board
+    board
   end
 
   def possible_words(dictionary, letters)
@@ -129,5 +129,5 @@ module Scrabble
   end
 end
 
-#Scrabble.best_opening('EXAMPLE_INPUT.json')
-Scrabble.best_opening('INPUT.json')
+#print Scrabble.best_opening('EXAMPLE_INPUT.json')
+print Scrabble.best_opening('INPUT.json')
