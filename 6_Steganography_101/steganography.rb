@@ -12,7 +12,11 @@ class Bitmap
     hidden_binary_message = message.unpack('C*').map { |i|
       i.to_s(2).rjust(8, '0')
     }.join.chars.map(&:to_i)
-    raise "Too long message" if hidden_binary_message.size > @width * @height
+
+    if hidden_binary_message.size > @width * @height
+      $stderr.puts "Too long message, truncating it."
+      hidden_binary_message = hidden_binary_message[0, @width * @height]
+    end
 
     @height.times { |y|
       @width.times { |x|
@@ -53,6 +57,7 @@ class Bitmap
     raise "Incorrect DIB header size" unless size == DIB_HEADER_SIZE
     raise "Only handles 8-bit color depth" unless @color_depth == 8
     raise "Compressed image" unless compression == 0
+    raise "Invalid height: (#{@height})" unless @height > 0
   end
 
   def parse_pixel_array
