@@ -47,10 +47,10 @@ class Bitmap
     header = File.binread(@path, FILE_HEADER_SIZE + DIB_HEADER_SIZE)
     @pixel_array_offset = header[0xA, 4].unpack('L')[0]
 
-    dib_header_size, @width, @height, _, @color_depth, compression, @pixel_array_size =
+    size, @width, @height, _, @color_depth, compression, @pixel_array_size =
       header[FILE_HEADER_SIZE, 4*3+2*2+4*2].unpack('Ll2S2L2')
 
-    raise "Incorrect DIB header size" unless dib_header_size == DIB_HEADER_SIZE
+    raise "Incorrect DIB header size" unless size == DIB_HEADER_SIZE
     raise "Only handles 8-bit color depth" unless @color_depth == 8
     raise "Compressed image" unless compression == 0
   end
