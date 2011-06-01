@@ -70,18 +70,12 @@ module Scrabble
   end
 
   def places_for(word, board)
-    places = []
-    (0...board.height).each { |y|
-      (0..board.width-word.size).each { |x|
-        places << Place.new(x, y, :horizontal)
-      }
-    }
-    (0..board.height-word.size).each { |y|
+    (0...board.height).each_with_object([]) { |y, places|
       (0...board.width).each { |x|
-        places << Place.new(x, y, :vertical)
+        places << Place.new(x, y, :horizontal) if x + word.size <= board.width
+        places << Place.new(x, y, :vertical)   if y + word.size <= board.height
       }
     }
-    places
   end
 
   private
