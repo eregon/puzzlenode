@@ -98,9 +98,13 @@ module Scrabble
     word.chars.each_with_object(Hash.new(0)) { |c, h| h[c] += 1 }
   end
 
-  # save all keys passed at the end of Array passed for max
+  # save all keys passed in the Array returned in block while maximising the first element
   # [value_maximised, what_to_keep]
   # => [what_to_keep related to max]
+  #
+  #   places.max_by_keys { |place|
+  #     [score, score, place]
+  #   } # => [best score, place corresponding]
   def max_by_keys(enum)
     best_value = nil
     best_to_keep = nil
