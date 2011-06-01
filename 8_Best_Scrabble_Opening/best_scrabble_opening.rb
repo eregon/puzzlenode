@@ -103,7 +103,7 @@ module Scrabble
   end
 
   def count_letters(word)
-    word.chars.each_with_object(Hash.new(0)) { |c, h| h[c] += 1 }
+    word.each_char.with_object(Hash.new(0)) { |c, h| h[c] += 1 }
   end
 
   # save all keys passed in the Array returned in block
