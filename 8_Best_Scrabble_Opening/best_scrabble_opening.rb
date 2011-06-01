@@ -37,21 +37,21 @@ module Scrabble
   end
 
   def best_opening(input)
-    board, dictionary, letters, letter_values = parse_input(input)
+    board, dictionary, letters, values = parse_input(input)
 
     words = possible_words(dictionary, letters)
 
     best_word, best_place = max_by_keys(words) { |word|
-      score, place = max_by_keys(places_for(word, board)) { |starting_position|
-        place = starting_position.dup
+      score, place = max_by_keys(places_for(word, board)) { |position|
+        place = position.dup
 
         score = word.chars.inject(0) { |current_score, letter|
-          value = board.at(place) * letter_values[letter]
+          value = board.at(place) * values[letter]
           place.next!
           current_score + value
         }
         
-        [score, score, starting_position]
+        [score, score, position]
       }
       [score, word, place]
     }
@@ -92,14 +92,14 @@ module Scrabble
 
     dictionary = data['dictionary']
 
-    letters, letter_values = Hash.new(0), {}
+    letters, values = Hash.new(0), {}
     data['tiles'].each { |tile|
       letter, value = tile[0], tile[1..-1].to_i
       letters[letter] += 1
-      letter_values[letter] = value
+      values[letter] = value
     }
 
-    [board, dictionary, letters, letter_values]
+    [board, dictionary, letters, values]
   end
 
   def count_letters(word)
