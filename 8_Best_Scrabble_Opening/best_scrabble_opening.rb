@@ -37,15 +37,16 @@ module Scrabble
 
     words = possible_words(dictionary, letters)
 
-    # find best place
     best_word, best_place = max_by_keys(words) { |word|
       score, place = max_by_keys(places_for(word, board)) { |starting_position|
         place = starting_position.dup
-        score = word.chars.inject(0) { |s, letter|
+
+        score = word.chars.inject(0) { |current_score, letter|
           value = board.values[place.y][place.x] * letter_values[letter]
           place.next!
-          s + value
+          current_score + value
         }
+        
         [score, score, starting_position]
       }
       [score, word, place]
@@ -101,7 +102,9 @@ module Scrabble
     word.chars.each_with_object(Hash.new(0)) { |c, h| h[c] += 1 }
   end
 
-  # save all keys passed in the Array returned in block while maximising the first element
+  # save all keys passed in the Array returned in block
+  #   while maximising the first element
+  #
   # [value_maximised, what_to_keep]
   # => [what_to_keep related to max]
   #
