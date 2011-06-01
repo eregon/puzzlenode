@@ -107,10 +107,12 @@ module Scrabble
   end
 
   # save all keys passed in the Array returned in block
-  #   while maximising the first element
+  #   while maximizing the first element
   #
-  # [value_maximised, what_to_keep]
+  # [value_maximized, what_to_keep]
   # => [what_to_keep related to max]
+  #
+  # Equivalent to enum.map { |e| [e, what_to_keep] }.max_by(&:first)[1..-1]
   #
   #   places.max_by_keys { |place|
   #     [score, score, place]
