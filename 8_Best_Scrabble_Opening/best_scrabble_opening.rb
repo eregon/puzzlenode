@@ -10,6 +10,10 @@ module Scrabble
       @height, @width = values.size, values[0].size
     end
 
+    def at(place)
+      @values[place.y][place.x]
+    end
+
     def play(word, place)
       word.each_char { |letter|
         @values[place.y][place.x] = letter
@@ -42,7 +46,7 @@ module Scrabble
         place = starting_position.dup
 
         score = word.chars.inject(0) { |current_score, letter|
-          value = board.values[place.y][place.x] * letter_values[letter]
+          value = board.at(place) * letter_values[letter]
           place.next!
           current_score + value
         }
