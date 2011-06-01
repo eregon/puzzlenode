@@ -26,7 +26,7 @@ module Scrabble
     end
   end
 
-  StartPosition = Struct.new(:x, :y, :direction) do
+  Place = Struct.new(:x, :y, :direction) do
     def next!
       if direction == :horizontal
         self.x += 1
@@ -73,12 +73,12 @@ module Scrabble
     places = []
     (0...board.height).each { |y|
       (0...board.width-word.size).each { |x|
-        places << StartPosition.new(x, y, :horizontal)
+        places << Place.new(x, y, :horizontal)
       }
     }
     (0...board.height-word.size).each { |y|
       (0...board.width).each { |x|
-        places << StartPosition.new(x, y, :vertical)
+        places << Place.new(x, y, :vertical)
       }
     }
     places
