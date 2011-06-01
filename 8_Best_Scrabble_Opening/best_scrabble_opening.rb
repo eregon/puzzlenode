@@ -35,12 +35,7 @@ module Scrabble
   def best_opening(input)
     board, dictionary, letters, letter_values = parse_input(input)
 
-    # select possible words
-    words = dictionary.select { |word|
-      count_letters(word).all? { |letter, count|
-        letters[letter] and letters[letter] >= count
-      }
-    }
+    words = possible_words(dictionary, letters)
 
     # find best place
     best_word, best_place = max_by_keys(words) { |word|
@@ -61,6 +56,14 @@ module Scrabble
     print board
   end
 
+  def possible_words(dictionary, letters)
+    dictionary.select { |word|
+      count_letters(word).all? { |letter, count|
+        letters[letter] and letters[letter] >= count
+      }
+    }
+  end
+
   def places_for(word, board)
     places = []
     (0...board.height).each { |y|
@@ -78,7 +81,7 @@ module Scrabble
 
   private
   def parse_input(file)
-    data = JSON.parse File.read input
+    data = JSON.parse File.read file
 
     board = Board.new data['board'].map { |line| line.split.map(&:to_i) }
 
