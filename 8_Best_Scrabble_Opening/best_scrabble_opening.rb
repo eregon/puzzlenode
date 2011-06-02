@@ -43,13 +43,13 @@ module Scrabble
 
     best_word, best_place = max_by_keys(words) { |word|
       score, place = max_by_keys(places_for(word, board)) { |position|
-        place, score = position.dup, 0
 
+        place, score = position.dup, 0
         word.each_char { |letter|
           score += board.at(place) * values[letter]
           place.next!
         }
-        
+
         [score, score, position]
       }
       [score, word, place]
