@@ -22,7 +22,7 @@ class Bitmap
       @width.times { |x|
         if hidden_binary_message[y*@width+x] == 1
           @pixels[y][x] += 1 if @pixels[y][x].even?
-        else # fill with zeros the rest
+        else # fill the rest with zeros
           @pixels[y][x] -= 1 if @pixels[y][x].odd?
         end
       }
