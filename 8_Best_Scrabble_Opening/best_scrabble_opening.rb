@@ -124,5 +124,4 @@ module Scrabble
   end
 end
 
-#print Scrabble.best_opening('EXAMPLE_INPUT.json')
-print Scrabble.best_opening('INPUT.json')
+print Scrabble.best_opening(ARGV.delete('-s') ? 'EXAMPLE_INPUT.json' : 'INPUT.json')
