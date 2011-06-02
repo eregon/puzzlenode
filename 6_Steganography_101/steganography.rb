@@ -32,7 +32,7 @@ class Bitmap
   def pixel_array
     @height.times.with_object("") { |i, str|
       str << @pixels[i].pack('C*').tap { |row|
-        row << 0 while row.size < @row_size
+        row << 0 while row.size < @row_size # pad row with zeros
       }
     }
   end
