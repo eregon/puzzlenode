@@ -121,4 +121,7 @@ module Scrabble
   end
 end
 
-print Scrabble.best_opening(ARGV.delete('-s') ? 'EXAMPLE_INPUT.json' : 'INPUT.json')
+if __FILE__ == $0
+  abort "ruby #{$0} input.json" if ARGV.size != 1
+  print Scrabble.best_opening(ARGV.first)
+end
