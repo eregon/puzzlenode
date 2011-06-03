@@ -30,7 +30,7 @@ class Bitmap
     }
   end
 
-  def pixel_array
+  def pixel_data
     @height.times.with_object("") { |i, str|
       str << @pixels[i].pack('C*').tap { |row|
         row << 0 while row.size < @row_size # pad row with zeros
@@ -43,7 +43,7 @@ class Bitmap
     footer = File.binread(@path, nil, @pixel_array_offset + @pixel_array_size)
 
     File.open(path, 'wb') { |file|
-      file << header << pixel_array << footer
+      file << header << pixel_data << footer
     }
   end
 
