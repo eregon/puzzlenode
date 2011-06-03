@@ -81,6 +81,6 @@ if __FILE__ == $0
   input, output, message_file = ARGV
 
   bitmap = Bitmap.new(input)
-  bitmap.encode_message(File.read(message_file)) if message_file
+  bitmap.encode_message File.read message_file if message_file
   bitmap.save(output)
 end
