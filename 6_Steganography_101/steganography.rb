@@ -63,8 +63,8 @@ class Bitmap
 
   def parse_pixel_array
     pixel_array = File.binread(@path, @pixel_array_size, @pixel_array_offset)
-    @row_size = (@color_depth * @width / 32.0).ceil * 4
     row_bytes = @color_depth * @width / 8
+    @row_size = (@color_depth * @width / 32.0).ceil * 4 # from wikipedia
     raise "Invalid image size" unless @pixel_array_size == @row_size * @height
 
     @pixels = @height.times.map { |i|
