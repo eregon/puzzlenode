@@ -73,13 +73,14 @@ class Bitmap
   end
 end
 
-input, output = if ARGV.delete '-s'
-  ['sample_input.txt', 'out.bmp']
-else
-  ['input.txt', 'solution.bmp']
-end
+if __FILE__ == $0
+  unless (2..3).include? ARGV.size
+    abort "ruby #{$0} input.bmp output.bmp [message file]"
+  end
 
-bitmap = Bitmap.new('input.bmp')
-message = File.read(input)
-bitmap.encode_message(message)
-bitmap.save(output)
+  input, output, message_file = ARGV
+
+  bitmap = Bitmap.new(input)
+  bitmap.encode_message(File.read(message_file)) if message_file
+  bitmap.save(output)
+end
