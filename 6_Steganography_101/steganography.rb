@@ -1,6 +1,7 @@
 class Bitmap
   FILE_HEADER_SIZE = 14
   DIB_HEADER_SIZE = 40
+  PIXEL_ARRAY_ADDRESS = 10
 
   def initialize(path)
     @path = path
@@ -49,7 +50,7 @@ class Bitmap
   private
   def parse_header
     header = File.binread(@path, FILE_HEADER_SIZE + DIB_HEADER_SIZE)
-    @pixel_array_offset = header[0xA, 4].unpack('L')[0]
+    @pixel_array_offset = header[PIXEL_ARRAY_ADDRESS, 4].unpack('L')[0]
 
     size, @width, @height, _, @color_depth, compression, @pixel_array_size =
       header[FILE_HEADER_SIZE, 4*3+2*2+4*2].unpack('Ll2S2L2')
