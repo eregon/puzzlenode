@@ -68,7 +68,7 @@ class Bitmap
     raise "Invalid image size" unless @pixel_array_size == @row_size * @height
 
     @pixels = @height.times.map { |i|
-        pixel_array[i*@row_size, row_bytes].unpack('C*')
+      pixel_array[i*@row_size, row_bytes].unpack('C*')
     }
   end
 end
