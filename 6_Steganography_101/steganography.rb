@@ -55,10 +55,10 @@ class Bitmap
     size, @width, @height, _, @color_depth, compression, @pixel_array_size =
       header[FILE_HEADER_SIZE, 4*3+2*2+4*2].unpack('Ll2S2L2')
 
-    raise "Incorrect DIB header size" unless size == DIB_HEADER_SIZE
-    raise "Only handles 8-bit color depth" unless @color_depth == 8
-    raise "Compressed image" unless compression == 0
-    raise "Invalid height: (#{@height})" unless @height > 0
+    raise "Incorrect DIB header size: #{size}" unless size == DIB_HEADER_SIZE
+    raise "Only handles 8-bit color depth: #{@color_depth}" if @color_depth != 8
+    raise "Compressed image: #{compression}" unless compression == 0
+    raise "Invalid height: #{@height}" unless @height > 0
   end
 
   def parse_pixel_array
