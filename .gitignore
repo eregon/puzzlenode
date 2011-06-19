@@ -1,2 +1,4 @@
 .DS_Store
 /site
+/Submission2/*
+!/Submission2/README

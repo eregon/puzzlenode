@@ -1,0 +1,35 @@
+Hello !
+
+Here are my solutions.
+I chose these problems:
+  6 - Steganography 101
+  8 - Best Scrabble Opening
+
+The solutions are in their own folders.
+They can be run with any Ruby >= 1.9.2
+
+6 - Steganography 101:
+
+The Bitmap class is very restricted for the format, but it should handle all logical inputs for the problem.
+Also, it will warn if one of the conditions is not met:
+- 8-bits color depth (black and white image)
+- not compressed
+- positive height
+- invalid header
+
+It also handles row padding as explained in the Wikipedia article (see the file input513x513.bmp).
+
+Usage is:
+$ ruby stenography.rb input.bmp output.bmp [message file]
+If no message is passed, the image is kept as is. This allows to test parsing/writing.
+
+8 - Best Scrabble Opening
+
+The algorithm used is quite simple: find the maximum score, for every possible word, at every possible position.
+It uses a custom method max_by_keys, which is a Enumerable#max_by enhanced.
+This helps to keep the word and position while maximizing the score.
+
+The objects of class Place are mutable, and calling #next! will give the next place, following their direction attribute.
+
+Usage is:
+$ ruby best_scrabble_opening.rb input.json
