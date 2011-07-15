@@ -41,27 +41,27 @@ module Logo
     end
 
     def step
-      if command = @commands.shift
-        case command
-        when /^REPEAT (\d+) \[ (.+) \]$/
-          n, c = $1.to_i, $2
-          n.times { @commands.unshift c }
-        when /^(R|L)T (\d+)$/ # turn right / left
-          @orientation += ($1 == 'R' ? $2.to_i : -$2.to_i) / 45
-          @orientation %= DIRECTIONS.size
-        when /^(FD|BK) (\d+)$/ # walk forward / backwards
-          $2.to_i.times { |i|
-            mark
-            $1 == 'FD' ? @position += direction : @position -= direction
-          }
+      case command = @commands.shift
+      when nil
+        return false
+      when /^REPEAT (\d+) \[ (.+) \]$/
+        n, c = $1.to_i, $2
+        n.times { @commands.unshift c }
+      when /^(R|L)T (\d+)$/ # turn right / left
+        @orientation += ($1 == 'R' ? $2.to_i : -$2.to_i) / 45
+        @orientation %= DIRECTIONS.size
+      when /^(FD|BK) (\d+)$/ # walk forward / backwards
+        $2.to_i.times { |i|
           mark
-        when /^([A-Z]+ (?:\d+)) (.+)$/ # two commands
-          @commands.unshift $1, $2
-        else
-          raise "Unknown command: #{command}"
-        end
-        true
+          $1 == 'FD' ? @position += direction : @position -= direction
+        }
+        mark
+      when /^([A-Z]+ (?:\d+)) (.+)$/ # two commands
+        @commands.unshift $1, $2
+      else
+        raise "Unknown command: #{command}"
       end
+      true
     end
 
     def run
