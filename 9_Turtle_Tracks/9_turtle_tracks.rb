@@ -73,6 +73,29 @@ module Logo
         row.map { |cell| cell ? 'X' : '.' }.join(' ')
       }.join("\n")
     end
+
+    def to_gplot
+      x, y = [], []
+      @grid.each_with_index { |row, i|
+        row.each_with_index { |cell, j|
+          if cell
+            x << j
+            y << i
+          end
+        }
+      }
+      [x, y]
+    end
+
+    def gnuplot
+      require 'gnuplot'
+      Gnuplot.open do |gp|
+        Gnuplot::Plot.new(gp) do |plot|
+          plot.title  "Turtle tracks"
+          plot.data << Gnuplot::DataSet.new(to_gplot) # use self instead of to_gplot for fun
+        end
+      end
+    end
   end
 
   def Logo.parse_input(file)
@@ -83,4 +106,5 @@ module Logo
 end
 interpreter = Logo::Interpreter.new(*Logo.parse_input('complex.logo'))
 interpreter.run
-puts interpreter
+#puts interpreter
+interpreter.gnuplot
