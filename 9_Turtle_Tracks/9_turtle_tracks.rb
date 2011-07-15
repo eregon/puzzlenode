@@ -96,6 +96,17 @@ module Logo
         end
       end
     end
+
+    def rmagick
+      require 'rmagick'
+      Magick::Image.new(@grid.size, @grid.size).tap { |img|
+        @grid.each_with_index { |row, y|
+          row.each_with_index { |cell, x|
+            img.pixel_color x, y, 'blue' if cell
+          }
+        }
+      }.write 'out.png'
+    end
   end
 
   def Logo.parse_input(file)
@@ -107,4 +118,4 @@ end
 interpreter = Logo::Interpreter.new(*Logo.parse_input('complex.logo'))
 interpreter.run
 #puts interpreter
-interpreter.gnuplot
+interpreter.rmagick
