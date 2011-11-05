@@ -3,9 +3,15 @@ require 'forwardable'
 Input = ARGV.include?('-s') ? 'sample-input.txt' : 'input.txt'
 Start, Arrival = 'A', 'Z'
 
+class Class
+  def to_proc
+    lambda { |*args| new(*args) }
+  end
+end
+
 class Array
-  def all_min_by
-    values = map { |e| yield(e) }
+  def all_min_by(&block)
+    values = map(&block)
     min = values.min
     select.with_index { |e, i| values[i] == min }
   end
@@ -38,7 +44,7 @@ class Path
   end
 
   def inspect
-    "#{join(', ')} => #{Hour.new(duration)} #{cost}$"
+    "#{join(', ')} => #{duration} #{cost}$"
   end
 end
 
@@ -58,11 +64,11 @@ class Hour
   end
 
   def to_s
-    [@h, @m].map { |e| '%02d' % e }.join(':')
+    "%02d:%02d" % [@h, @m]
   end
 
   def - hour
-    to_i - hour.to_i
+    Hour.new(to_i - hour.to_i)
   end
 
   def <=>(hour)
@@ -74,7 +80,7 @@ class Flight
   attr_reader :from, :to, :departure, :arrival, :price
   def initialize from, to, departure, arrival, price
     @from, @to = from, to
-    @departure, @arrival = [departure, arrival].map { |hour| Hour.new(hour) }
+    @departure, @arrival = [departure, arrival].map(&Hour)
     @price = Float(price)
   end
 
@@ -146,17 +152,9 @@ flight_groups.each_with_index { |flights, i|
   end
 
   all_paths = all_paths(flights)
-#  all_paths.each { |path| p path } && puts if $DEBUG
 
-  all_paths.all_min_by(&:cost).each { |path| p path } if $VERBOSE
-  cheapest_path = all_paths.only_min_by { |path| [path.cost, path.duration, path.size] }
-  p cheapest_path if $DEBUG
-  puts cheapest_path
-
-  all_paths.all_min_by(&:duration).each { |path| p path } if $VERBOSE
-  fast_path = all_paths.only_min_by { |path| [path.duration, path.cost, path.size] }
-  p fast_path if $DEBUG
-  puts fast_path
+  puts all_paths.only_min_by { |path| [path.cost, path.duration, path.size] }
+  puts all_paths.only_min_by { |path| [path.duration, path.cost, path.size] }
 
   if ARGV.include? '-p' # draw paths
     require 'graphviz'
@@ -173,13 +171,3 @@ flight_groups.each_with_index { |flights, i|
     }.output(svg: "graph/graph-#{Input}-#{i+1}-paths.svg")
   end
 }
-
-
-
-
-
-
-
-
-
-
