@@ -9,6 +9,12 @@ class Array
     min = values.min
     select.with_index { |e, i| values[i] == min }
   end
+
+  def only_min_by(&block)
+    all = all_min_by(&block)
+    raise ArgumentError, "Multiple minimals: #{all.size}: #{all}" unless all.size == 1
+    all.first
+  end
 end
 
 class Path
@@ -17,8 +23,7 @@ class Path
     @ary = path
   end
 
-  #def_delegators :@ary, :join, :map, :last, :first
-  delegate [:join, :each, :map, :last, :first] => :@ary
+  delegate [:join, :each, :map, :last, :first, :size] => :@ary
 
   def cost
     map(&:price).reduce(:+)
@@ -70,11 +75,11 @@ class Flight
   def initialize from, to, departure, arrival, price
     @from, @to = from, to
     @departure, @arrival = [departure, arrival].map { |hour| Hour.new(hour) }
-    @price = price.to_i
+    @price = Float(price)
   end
 
   def to_s
-    "#{from}(#{departure}) -> #{to}(#{arrival}) #{price}$"
+    "#{from}(#{departure}) -> #{to}(#{arrival}) #{'%.2f' % price}$"
   end
 
   def > flight # self can be taken after flight
@@ -84,7 +89,7 @@ end
 
 # simpler: create all possible paths, then choose best
 
-def all_paths(flights, from = Start)
+def all_paths(flights)
   flights.select { |f| f.from == Start }.each_with_object([]) { |flight, paths|
     sub(paths, flight, flights)
   }
@@ -109,22 +114,24 @@ flight_groups = lines.next.to_i.times.map {
 }
 
 flight_groups.each_with_index { |flights, i|
+  puts unless i == 0
+
   # remove flights going to Start or going from Arrival
   flights.reject! { |flight| flight.to == Start or flight.from == Arrival }
 
   # remove impossible flights
-  flights.select! { |flight|
-    flight.from == Start or flight.to == Arrival or flights.any? { |f| flight > f }
-  }
+  # flights.select! { |flight|
+  #   flight.from == Start or flight.to == Arrival or flights.any? { |f| flight > f }
+  # }
 
   # remove bad flights
-  flights.reject! { |flight|
-    flights.any? { |better|
-      better.from == flight.from and better.to == flight.to and
-      better.price <= flight.price and better.departure >= flight.departure and better.arrival <= flight.arrival and
-      (better.price < flight.price or better.departure > flight.departure or better.arrival < flight.arrival)
-    }
-  }
+  # flights.reject! { |flight|
+  #   flights.any? { |better|
+  #     better.from == flight.from and better.to == flight.to and
+  #     better.price <= flight.price and better.departure >= flight.departure and better.arrival <= flight.arrival and
+  #     (better.price < flight.price or better.departure > flight.departure or better.arrival < flight.arrival)
+  #   }
+  # }
 
   flights.sort_by! { |flight| [flight.from, flight.to, flight.departure, flight.arrival] }
 
@@ -142,16 +149,14 @@ flight_groups.each_with_index { |flights, i|
 #  all_paths.each { |path| p path } && puts if $DEBUG
 
   all_paths.all_min_by(&:cost).each { |path| p path } if $VERBOSE
-  cheapest_path = all_paths.min_by(&:cost) # need a criteria to find shortest flights
+  cheapest_path = all_paths.only_min_by { |path| [path.cost, path.duration, path.size] }
   p cheapest_path if $DEBUG
   puts cheapest_path
 
   all_paths.all_min_by(&:duration).each { |path| p path } if $VERBOSE
-  fast_path = all_paths.all_min_by(&:duration).min_by(&:cost)
+  fast_path = all_paths.only_min_by { |path| [path.duration, path.cost, path.size] }
   p fast_path if $DEBUG
   puts fast_path
-
-  puts
 
   if ARGV.include? '-p' # draw paths
     require 'graphviz'
