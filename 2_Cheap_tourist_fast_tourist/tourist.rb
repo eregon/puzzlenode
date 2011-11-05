@@ -96,19 +96,18 @@ end
 # simpler: create all possible paths, then choose best
 
 def all_paths(flights)
-  flights.select { |f| f.from == Start }.each_with_object([]) { |flight, paths|
-    sub(paths, flight, flights)
-  }
-end
-
-def sub(paths, flight, flights, visited = [flight.from, flight.to], path = [flight])
-  if flight.to == Arrival
-    paths << Path.new(path)
-  else
-    flights.select { |f| f > flight }.each { |f|
-      sub(paths, f, flights, visited + [f.to], path + [f])
-    }
+  paths = []
+  sub = -> flight, visited = [flight.from, flight.to], path = [flight] do
+    if flight.to == Arrival
+      paths << Path.new(path)
+    else
+      flights.select { |f| f > flight }.each { |f|
+        sub.call(f, visited.dup << f.to, path.dup << f)
+      }
+    end
   end
+  flights.select { |f| f.from == Start }.each(&sub)
+  paths
 end
 
 lines = File.read(Input).lines
