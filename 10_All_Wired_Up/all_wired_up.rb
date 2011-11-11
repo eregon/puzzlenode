@@ -50,19 +50,16 @@ class Circuit
   end
 
   def find_inputs
-    @inputs = []
-    @map.each_with_index { |row, y|
+    @inputs = @map.each_with_index.with_object([]) { |(row, y), inputs|
       row.each_with_index { |c, x|
-        @inputs << Input.new(c == '1', Place.new(x, y, @map)) if INPUTS.include? c
+        inputs << Input.new(c == '1', Place.new(x, y, @map)) if INPUTS.include? c
       }
     }
   end
 
   def unleash_power
     loop do
-      @inputs.each { |input|
-        input.go_until_gate
-      }
+      @inputs.each(&:go_until_gate)
 
       break if @inputs.first.pos.at == LIGHT_BULB[0]
 
@@ -83,7 +80,7 @@ class Circuit
         end
       }
     end
-    puts @inputs[0].value ? 'on' : 'off'
+    puts @inputs.first.value ? 'on' : 'off'
   end
 end
 
