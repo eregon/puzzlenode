@@ -64,20 +64,18 @@ module AllWiredUp
         break if @inputs.first.pos.at == LIGHT_BULB[0]
 
         @inputs.each { |input|
-          next unless @inputs.include? input
-          other = @inputs.find { |other|
-            !other.equal?(input) and input == other
-          }
-          if other
-            input.value = GATES[input.pos.at][input.value, other.value]
-            input.pos.right!
-            @inputs.delete other
-          elsif input.pos.at == 'N'
-            input.value = !input.value
-            input.pos.right!
+          next unless @inputs.include? input # input has been removed
+          gate = GATES[input.pos.at]
+
+          if gate.arity == 1
+            input.value = gate[input.value]
           else
-            # wait other to arrive
+            other = @inputs.find { |other|
+              other != input and input.pos == other.pos
+            } or next # wait others to arrive
+            input.value = gate[input.value, @inputs.delete(other).value]
           end
+          input.pos.right!
         }
       end
       puts @inputs.first.value ? 'on' : 'off'
@@ -96,14 +94,9 @@ module AllWiredUp
         @pos.right! or @pos.down! or @pos.up!
       end
     end
-
-    def == other
-      @pos == other.pos
-    end
   end
 end
 
-File.read('complex_circuits.txt').split("\n\n").each { |circuit|
+File.read('complex_circuits.txt').split("\n\n").each do |circuit|
   AllWiredUp::Circuit.new(circuit).solve
-}
-
+end
