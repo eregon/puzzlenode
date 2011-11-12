@@ -41,7 +41,7 @@ module AllWiredUp
   class Circuit
     attr_reader :map
     def initialize(str)
-      @map = str.lines.map { |line| line.chomp.chars.to_a }
+      @map = str.lines.map { |line| line.chomp }
     end
 
     def solve
@@ -51,7 +51,7 @@ module AllWiredUp
 
     def find_inputs
       @inputs = @map.each_with_index.with_object([]) { |(row, y), inputs|
-        row.each_with_index { |c, x|
+        row.chars.each_with_index { |c, x|
           inputs << Input.new(c == '1', Place.new(x, y, @map)) if INPUTS.include? c
         }
       }
