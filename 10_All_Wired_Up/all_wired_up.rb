@@ -82,16 +82,12 @@ module AllWiredUp
     end
   end
 
-  class Input
-    attr_accessor :value
-    attr_reader :pos
-    def initialize(value, pos)
-      @value, @pos = value, pos
-    end
+  class Input < Struct.new(:value, :pos)
+    alias :== :equal?
 
     def go_until_gate
-      until GATE_BULB.include? @pos.at
-        @pos.right! or @pos.down! or @pos.up!
+      until GATE_BULB.include? pos.at
+        pos.right! or pos.down! or pos.up!
       end
     end
   end
